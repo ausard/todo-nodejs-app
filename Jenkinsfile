@@ -2,7 +2,7 @@ pipeline{
     agent any
     options{
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
-        timestamps()
+        // timestamps()
     }
     environment {
         registryBackend = "ausard/todo-backend"
