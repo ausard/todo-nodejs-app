@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+ nginx.conf: |
+  worker_processes 4;
+  events { worker_connections 1024; }
+  http {
+    upstream frontend {
+        server frontend:3000;
+    }
+    upstream app {
+        server app:3000;
+    }
+    server {
+      listen 80;
+      location / {
+        proxy_pass http://frontend;
+      }
+      location /items {
+        proxy_pass http://app;
+      }
+    }
+  }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: proxy
+  name: proxy
+spec:
+  selector:
+      matchLabels:
+        app: proxy
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: proxy
+    spec:
+      containers:
+      - image: nginx:latest
+        name: proxy
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-conf 
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf 
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: proxy
+

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: todo-backend
+  name: todo-backend
+spec:
+  selector:
+    matchLabels:
+      app: todo-backend
+  replicas: 2  
+  template:
+    metadata:      
+      labels:
+        app: todo-backend
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: mysql-config
+        - secretRef:              
+            name: mysql-secret
+        image: ausard/todo-backend
+        name: todo-backend
+        ports:
+          - containerPort: 3000
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"        
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: todo-backend
+  name: app
+spec:    
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: todo-backend
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: todo-backend
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
