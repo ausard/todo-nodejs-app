@@ -16,7 +16,8 @@ pipeline{
                 // cleanWs()
                 //Installing kubectl in Jenkins agent
                 sh 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl'
-                sh 'chmod +x ./kubectl && sudo mv kubectl /usr/local/sbin'
+                sh 'chmod +x ./kubectl'
+                // && sudo mv kubectl /usr/local/sbin'
 
                 //Clone git repository
                 git branch: 'main', 
@@ -49,10 +50,8 @@ pipeline{
            }
            stage('Deploying into k8s'){
             steps{
-                dir('deploy'){
-                    withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'jenkins-deployer-credentials', namespace: '', serverUrl: 'https://172.17.0.2') {
-                        sh 'kubectl apply -f k8s'
-                    }
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'jenkins-deployer-credentials', namespace: '', serverUrl: 'https://172.17.0.2') {
+                    sh './kubectl apply -f depoy/k8s'
                 }                
             }
         }
