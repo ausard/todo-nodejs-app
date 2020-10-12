@@ -1,10 +1,8 @@
 pipeline{
-    agent {
-        label 'master'
-    }
+    agent any
     options{
         buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
-        // timestamps()
+        timestamps()
     }
     environment {
         registryBackend = "ausard/todo-backend"
@@ -15,10 +13,10 @@ pipeline{
     stages {
         stage('Preparation'){
            steps{
-                // cleanWs()
+                cleanWs()
                 //Installing kubectl in Jenkins agent
-                sh 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl'
-                sh 'chmod +x ./kubectl'
+                // sh 'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl'
+                // sh 'chmod +x ./kubectl'
                 // && sudo mv kubectl /usr/local/sbin'
 
                 //Clone git repository
@@ -52,9 +50,10 @@ pipeline{
            }
            stage('Deploying into k8s'){
             steps{
-                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'jenkins-deployer-credentials', namespace: '', serverUrl: 'https://172.17.0.2') {
-                    sh './kubectl apply -f depoy/k8s'
-                }                
+                sh 'kubectl apply -f depoy/k8s'
+                // withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'jenkins-deployer-credentials', namespace: '', serverUrl: 'https://172.17.0.2') {
+                    
+                // }                
             }
         }
     }
