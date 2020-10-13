@@ -9,6 +9,19 @@ data:
   MYSQL_RANDOM_ROOT_PASSWORD: "true"
 ---
 apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: mysql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-secret
@@ -54,6 +67,8 @@ spec:
         hostPath:
           path: /data/mysql-data/        
           type: Directory
+        # persistentVolumeClaim:
+        #   claimName: mysql-pv-claim
 ---
 apiVersion: v1
 kind: Service

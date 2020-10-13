@@ -19,13 +19,13 @@ spec:
         name: frontend
         ports:
           - containerPort: 3000
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        # resources:
+        #   requests:
+        #     memory: "128Mi"
+        #     cpu: "250m"
+        #   limits:
+        #     memory: "256Mi"
+        #     cpu: "500m"
         stdin: true
       restartPolicy: Always
 ---
@@ -38,6 +38,7 @@ metadata:
 spec:
   ports:
   - port: 3000
+    protocol: TCP
     targetPort: 3000
   selector:
     app: todo-frontend
