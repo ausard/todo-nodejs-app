@@ -1,18 +1,22 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
-metadata:  
-  name: nginx-ingress
+metadata:
+  name: web
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: "/"
 spec:
   rules:
   - http:
       paths:
-      - backend:
+      - path: "/"
+        backend:
           serviceName: frontend
           servicePort: 3000
-        path: /
-      - backend:
+      - path: "/items"
+        backend:
           serviceName: app
           servicePort: 3000
-        path: /items
 
 

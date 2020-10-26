@@ -4,28 +4,39 @@ metadata:
   name: todo-frontend
   labels:
     app: todo-frontend
+    tier: frontend
+    track: canary
 spec:
   selector:
       matchLabels:
         app: todo-frontend
-  replicas: 2
+  replicas: 4
+  minReadySeconds: 40
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   template:
     metadata:      
       labels:
         app: todo-frontend
+        tier: frontend
+        track: canary
     spec:
       containers:
-      - image: ausard/todo-frontend
+      - image: ausard/todo-frontend:latest
+        imagePullPolicy: Always
         name: frontend
         ports:
           - containerPort: 3000
         # resources:
         #   requests:
-        #     memory: "128Mi"
-        #     cpu: "250m"
-        #   limits:
         #     memory: "256Mi"
         #     cpu: "500m"
+        #   limits:
+        #     memory: "512Mi"
+        #     cpu: "1000m"
         stdin: true
       restartPolicy: Always
 ---

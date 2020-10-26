@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: todo-ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: vm.local
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: frontend
+          servicePort: 3000
+      - path: /items
+        backend:
+          serviceName: app
+          servicePort: 3000
+
+

@@ -63,6 +63,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+      app: proxy
   name: nginx-svc
 spec:
   type: NodePort
