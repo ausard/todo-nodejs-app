@@ -11,7 +11,7 @@ spec:
       matchLabels:
         app: todo-frontend
   replicas: 3
-  minReadySeconds: 40
+  minReadySeconds: 120
   strategy:
     type: RollingUpdate
     rollingUpdate:
