@@ -25,7 +25,7 @@ spec:
         track: canary
     spec:
       containers:
-      - image: ausard/todo-frontend:greenyellow
+      - image: ausard/todo-frontend:blue
         imagePullPolicy: Always
         name: frontend
         ports:
