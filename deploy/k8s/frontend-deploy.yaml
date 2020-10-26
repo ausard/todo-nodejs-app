@@ -10,7 +10,7 @@ spec:
   selector:
       matchLabels:
         app: todo-frontend
-  replicas: 4
+  replicas: 3
   minReadySeconds: 40
   strategy:
     type: RollingUpdate
@@ -25,7 +25,7 @@ spec:
         track: canary
     spec:
       containers:
-      - image: ausard/todo-frontend:latest
+      - image: ausard/todo-frontend:greenyellow
         imagePullPolicy: Always
         name: frontend
         ports:
